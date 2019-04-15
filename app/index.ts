@@ -1,5 +1,1 @@
-import FileReader from './FileReader';
-
-export default {
-    FileReader
-}
+export {default as FileReader} from "./FileReader";
