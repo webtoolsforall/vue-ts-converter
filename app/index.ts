@@ -1,1 +1,1 @@
-export {default as FileReader} from "./FileReader";
+export {default as ComponentsHandler} from "./ComponentsHandler";
