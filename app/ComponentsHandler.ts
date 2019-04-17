@@ -1,9 +1,12 @@
 import { readFile, writeFile } from "./util";
 
 export default class ComponentsHandler {
-  constructor() {
-    console.log("bingo");
-  }
+   USE_NUXT: boolean = true;
+   REMOVE_COMMENTS: boolean = true;
+  constructor(options: ComponentsHandlerOption = {nuxt: true, removeComments: true}) {
+      this.USE_NUXT = options.nuxt; 
+      this.REMOVE_COMMENTS = options.removeComments; 
+  } 
 
   async read(path: string, opt: object) {
     return await readFile(path, opt);

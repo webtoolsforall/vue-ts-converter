@@ -10,7 +10,8 @@
     ],
     "include": [
       "app/**/*.ts",
-      "node_modules/@types/node/**/*.ts"
+      "node_modules/@types/node/**/*.ts",
+      "types/**/*.ts"
     ],
     "exclude": [
       "node_modules"
