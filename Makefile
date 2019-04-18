@@ -5,8 +5,12 @@ install:
 	npm install
 
 # build types/index.d.ts
-make-types-entry:
+build-entry:
 	node build/buildTypes.js $(filter-out $@,$(MAKECMDGOALS))
+
+# add new class
+new:
+	node build/newAppClass.js $(filter-out $@,$(MAKECMDGOALS))
 
 dev:
 	 npm run dev

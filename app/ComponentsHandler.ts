@@ -8,7 +8,7 @@ export default class ComponentsHandler {
       this.REMOVE_COMMENTS = options.removeComments; 
   } 
 
-  async read(path: string, opt: object) {
+  async read(path: string, opt: object): Promise<string> {
     return await readFile(path, opt);
   }
 

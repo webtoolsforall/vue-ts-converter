@@ -2,6 +2,7 @@
   "name": "@jser/vue-ts-converter",
   "version": "1.0.0",
   "description": "A vue to ts converter",
+  "typings": "types/index.d.ts",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

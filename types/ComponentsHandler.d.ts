@@ -1,3 +1,10 @@
+
+ interface ComponentsHandler {
+    USE_NUXT: boolean;
+    REMOVE_COMMENTS: boolean;
+    read(): Promise<string>;
+    write(): Promise<string>;
+}
  /**
   * component handler options
   * @params nuxt convert to nuxt

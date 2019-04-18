@@ -2,7 +2,7 @@
     <div>
          <dl class="m-common-list">
         <dt>发现更多精彩</dt>
-        <dd v-for="item in dataObj.recommendList">
+        <dd v-for="item in dataObj.recommendList" :key="item">
             <a :href="item.webUrl" target="_blank"><img :src="item.imageUrl"></a>
         </dd>
         </dl>

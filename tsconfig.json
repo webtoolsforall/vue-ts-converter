@@ -11,7 +11,7 @@
     "include": [
       "app/**/*.ts",
       "node_modules/@types/node/**/*.ts",
-      "types/**/*.ts"
+      "types/index.d.ts"
     ],
     "exclude": [
       "node_modules"
