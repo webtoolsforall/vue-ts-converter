@@ -1,5 +1,2 @@
-import FileReader from './FileReader';
-
-export default {
-    FileReader
-}
+export {default as ComponentParser} from "./ComponentParser" 
+export {default as ComponentsHandler} from "./ComponentsHandler" 

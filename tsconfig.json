@@ -9,7 +9,9 @@
       "./node_modules/@types/node/index.d.ts"
     ],
     "include": [
-      "app/**/*.ts"
+      "app/**/*.ts",
+      "node_modules/@types/node/**/*.ts",
+      "types/index.d.ts"
     ],
     "exclude": [
       "node_modules"
