@@ -23,3 +23,4 @@ const fs = require('fs');
     await writeFile(resolve(__dirname, '../types/index.d.ts'), fileContent)
     console.log('write index.d.ts entry end');
 })()
+
