@@ -18,6 +18,8 @@ dev:
 # create new package and generate ts entry
 new-build: 
 	node build/newAppClass.js $(filter-out $@,$(MAKECMDGOALS)) && make build-entry
+build-app-entry: 
+	node build/buildPackageEntry.js
 
 help:
 	@echo "   \033[35mmake\033[0m \033[1musage\033[0m"
