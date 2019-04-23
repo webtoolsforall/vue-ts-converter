@@ -18,6 +18,7 @@ dev:
 # create new package and generate ts entry
 new-build: 
 	node build/newAppClass.js $(filter-out $@,$(MAKECMDGOALS)) && make build-entry
+	
 build-app-entry: 
 	node build/buildPackageEntry.js
 
