@@ -3,14 +3,11 @@
       "target": "es6",
       "module": "commonjs",
       "outDir": "dist",
-      "sourceMap": true
+      "sourceMap": true,
+      "types": ["node"]
     },
-    "files": [
-      "./node_modules/@types/node/index.d.ts"
-    ],
     "include": [
       "app/**/*.ts",
-      "node_modules/@types/node/**/*.ts",
       "types/index.d.ts"
     ],
     "exclude": [
