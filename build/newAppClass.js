@@ -5,16 +5,18 @@ const {
 const {
     resolve
 } = require('path');
+const chalk = require('chalk');
 process.on('exit', () => {
     console.log();
 });
-
+const fs = require('fs');
 if (!process.argv[2]) {
     console.error('Class name is required');
     process.exit(1);
 }
 const firstLetterCapital = /^[A-Z]/
 let className = process.argv[2];
+const comment = process.argv[3]
 // auto toUpperCase if not Capital
 if (!startsWithCapitalLetter(className)) {
     className = className.charAt(0).toUpperCase() + className.slice(1)
@@ -22,11 +24,18 @@ if (!startsWithCapitalLetter(className)) {
 const files = [{
     path: resolve(__dirname, `../app/${className}.ts`),
     content: `
-export default class ${className} {
-    constructor(){
-
+    ${comment ? 
+    `
+    /**
+    * ${comment.split('-').join(' ')}
+    */
+    ` : ''
     }
-}
+    export default class ${className} {
+        constructor(){
+
+        }
+    }
         `
 },
 {
@@ -40,9 +49,12 @@ export default class ${className} {
 
 (async function create(){
     for (const file of files) {
+        if(fs.existsSync(file.path)){
+           throw new Error(chalk.red(`file: ${file.path} is already exists. will not create ${className}`));
+        }
         await writeFile(file.path, file.content)
     }
 })()
 
-console.log('generate finished');
+console.log(chalk.green(`new class ${className} generated`));
 
