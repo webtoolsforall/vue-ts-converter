@@ -7,12 +7,12 @@ const {
     readComponents
 } = require('./utils');
 const fs = require('fs');
-
+const chalk = require('chalk');
 (async function generateTypesEntry() {
     let fileContent = ''
     if (fs.existsSync(resolve(__dirname, '../app/index.ts'))) {
         fs.unlink(resolve(__dirname, '../app/index.ts'), ()=> {
-            console.log('found exists index.ts removed');
+            console.log(chalk.red('found exists index.ts removed'));
         })
     }
     const files = await readComponents(resolve(__dirname, '../app/'))
@@ -21,6 +21,6 @@ const fs = require('fs');
         fileContent += currentFileConfig
     })
     await writeFile(resolve(__dirname, '../app/index.ts'), fileContent)
-    console.log('write index.ts entry end');
+    console.log(chalk.green('write index.ts entry end'));
 })()
 

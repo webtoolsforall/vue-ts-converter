@@ -26,6 +26,7 @@
   "homepage": "https://github.com/me-jser/vue-ts-converter#readme",
   "devDependencies": {
     "@types/node": "^11.13.4",
+    "chalk": "^2.4.2",
     "typescript": "^3.4.3"
   }
 }
