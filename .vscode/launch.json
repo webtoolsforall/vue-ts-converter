@@ -19,6 +19,12 @@
             "request": "launch",
             "name": "Debug current File",
             "program": "${file}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug play File",
+            "program": "${workspaceFolder}/dist/play.js"
         }
     ]
 }

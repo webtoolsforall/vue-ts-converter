@@ -1,2 +1,3 @@
-import {parseVue} from './util/';
-parseVue()
+import {RouterFlatter} from './routerParse';
+let t = new RouterFlatter()
+t.readVueRouter()

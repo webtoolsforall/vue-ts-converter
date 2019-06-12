@@ -1,5 +1,5 @@
 const fs = require('fs');
-exports.readDir = async (dir, options) => {
+exports.readDir =  (dir, options) => {
     return new Promise((resolve, reject) => {
         fs.readdir(dir, options, (err, files) => {
             if (err) {
