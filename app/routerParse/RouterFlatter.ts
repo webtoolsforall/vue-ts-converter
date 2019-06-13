@@ -9,15 +9,26 @@ export default class RouterFlatter {
   constructor() {}
   async readVueRouter() {
    this.routerFiles  = await readFilesWithoutSuffix(this.CONFIG_FILE_DIR)
-   this.routerFiles.forEach(async d => {
-     let routerContent = await readFile(`${this.CONFIG_FILE_DIR}/${d}.js`)
-     this.routerData.push(this.parseES6RouterString(routerContent)) 
-   })
+   for(let d in this.routerFiles) {
+    let routerContent = await readFile(`${this.CONFIG_FILE_DIR}/${this.routerFiles[d]}.js`)
+    this.routerData.push(this.parseES6RouterString(routerContent)) 
+   }
+   let test = this.flatter(this.routerData)
+   let testt = this.flatter(test)
    debugger
   }
   parseES6RouterString(routerFile: string): Array<Object>{
     const removeExportReg = /export.*?default\s+/g
     const contentWithoutExport = routerFile.replace(removeExportReg, '')
-      return eval(contentWithoutExport)
+      return contentWithoutExport ? eval(contentWithoutExport) : []
+  }
+  flatter (arr: Array<any>): Array<object> {
+    let self = this;
+    return arr.reduce(function(flat, toFlatten) {
+      console.log(toFlatten)
+      return flat.concat(
+        Array.isArray(toFlatten.children) ? self.flatter(toFlatten) : toFlatten
+      );
+    }, []);
   }
 }

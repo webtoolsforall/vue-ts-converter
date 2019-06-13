@@ -52,8 +52,8 @@ export const readFilesWithoutSuffix = dir => {
       withFileTypes: true
     });
     const filesNames = dirs
-      .filter(d => d.name.includes("."))
-      .map(d => d.name.split(".").splice(0, 1)[0]);
+      .filter(d => d.includes(".") || d.name.includes("."))
+      .map(d => d.split(".").splice(0, 1)[0] || d.name.split(".").splice(0, 1)[0]);
     resolve(filesNames);
   });
 };
