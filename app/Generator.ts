@@ -25,13 +25,13 @@ export default class Generator {
     this.vueRouter = router;
     this.projectConfig = config;
     this.logger = winston;
-    this.start()
+    this.start();
   }
-  async start () {
-      let vueRouter = await this.flatVueRouter(this.vueRouter)
-      vueRouter.forEach(d => {
-        this.parseSingleRoute(d)
-      })
+  async start() {
+    let vueRouter = await this.flatVueRouter(this.vueRouter);
+    vueRouter.forEach(d => {
+      this.parseSingleRoute(d);
+    });
   }
   async flatVueRouter(router): Promise<Array<any>> {
     return new Promise((resolve, reject) => {
@@ -125,10 +125,18 @@ export default class Generator {
     componentPath: string
   ): Promise<Boolean | Array<string> | any> {
     return new Promise(async (resolve, reject) => {
-      let aliasToExclude = ['api', 'fun']
+      let aliasToExclude = ["api", "fun"];
       try {
         const result = [];
         let componentString = await readFile(componentPath);
+        // has no js script. mean without sub modules
+        if (
+          !componentString.includes("<script>") &&
+          !componentString.includes("</script>")
+        ) {
+          resolve(result);
+          return;
+        }
         // 8 is the length of '<script>'
         const startPoint = componentString.indexOf("<script>") + 8;
         const endPoint = componentString.indexOf("</script>");
@@ -138,7 +146,10 @@ export default class Generator {
         } = await parseComponentScript(componentJsCode);
         parseResult.forEach(d => {
           if (d.type === "ImportDeclaration") {
-            result.push(d.source.value);
+            // value not in exclude list
+            if (!aliasToExclude.includes(d.source.value)) {
+              result.push(d.source.value);
+            }
           }
         });
         resolve(result);
@@ -178,10 +189,12 @@ export default class Generator {
         if (matchAliasAtFirst.test(path)) {
           let alias = matchAliasAtFirst.exec(path);
           resolve(
-            `${this.projectConfig.alias[alias && alias[1]]}/${path.replace(
-              `${alias[1]}/`,
-              ""
-            )}${path.includes(".vue") ? "" : ".vue"}`
+            addVueSuffix(
+              `${this.projectConfig.alias[alias && alias[1]]}/${path.replace(
+                `${alias[1]}/`,
+                ""
+              )}`
+            )
           );
         } else {
           resolve(`${path}`);

@@ -1,9 +1,9 @@
 import * as fs from "fs";
 import * as mkdirp from 'mkdirp';
 import {getPathFromFile} from './';
+import winston from '../logger';
 export const copy = (from, to): Promise<any> => {
-  const currentPath = getPathFromFile(to)
-  mkdirp(currentPath)
+  mkdirp.sync(getPathFromFile(to))
   return new Promise((resolve, reject) => {
     fs.copyFile(from, to, err => {
       if (err) throw err;

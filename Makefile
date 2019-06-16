@@ -23,6 +23,14 @@ babel-build:
 # create new package and generate ts entry
 new-build: 
 	node build/newAppClass.js $(filter-out $@,$(MAKECMDGOALS)) && make build-entry && make build-app-entry
+
+clear: 
+	rm -rf logs && rm -rf output
+run: 
+	node dist/play.js
+
+start: clear run
+
 help:
 	@echo "   \033[35mmake\033[0m \033[1musage\033[0m"
 	@echo "   \033[35mmake install\033[0m\t\033[0m\t\033[0m\t\033[0m\t---  install dependecies"
