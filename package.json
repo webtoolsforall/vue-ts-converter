@@ -1,7 +1,7 @@
 {
-  "name": "@jser/vue-ts-converter",
+  "name": "@jser/vue-nuxt-ts-converter",
   "version": "1.0.0",
-  "description": "A vue to ts converter",
+  "description": "A vue to nuxt && ts converter",
   "typings": "types/index.d.ts",
   "main": "index.js",
   "scripts": {
@@ -40,7 +40,6 @@
   "dependencies": {
     "@babel/parser": "^7.4.5",
     "commander": "^2.20.0",
-    "esm": "^3.2.25",
     "mkdirp": "^0.5.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",

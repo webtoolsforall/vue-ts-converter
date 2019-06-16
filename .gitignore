@@ -11,3 +11,4 @@ dist/
 source/
 logs/
 output/
+*.todo

@@ -12,7 +12,8 @@ import {
   addVueSuffix,
   getPathFromFile,
   copy,
-  flatVueRouterArray
+  flatVueRouterArray,
+  uniqArrayObject
 } from "./util";
 import winston from "./logger";
 export default class Generator {
@@ -29,9 +30,10 @@ export default class Generator {
   }
   async start() {
     let vueRouter = await this.flatVueRouter(this.vueRouter);
-    vueRouter.forEach(d => {
-      this.parseSingleRoute(d);
-    });
+    for (const route of vueRouter) {
+      await this.parseRouteModules(route);
+    }
+    this.doFileCopy(uniqArrayObject(this.fileToMove, "from"));
   }
   async flatVueRouter(router): Promise<Array<any>> {
     return new Promise((resolve, reject) => {
@@ -47,45 +49,39 @@ export default class Generator {
    * parse single router and move it
    * @param route vue router single route config
    */
-  async parseSingleRoute(route) {
-    try {
-      let parsedRoute: RouterParseResult = await this.parseRouterConfig(route);
-      this.fileToMove.push({
-        from: addVueSuffix(parsedRoute.fileRelativePath),
-        to:
-          (await this.gotCopyDestination(parsedRoute.fileRelativePath)) || null
-      });
-      let subModules = await this.checkSubModules(parsedRoute.fileRelativePath);
-      for (const module of subModules) {
-        let subPath = await this.checkAlias(module);
-        let stillHasSubModule = await this.checkSubModules(subPath);
-        if (stillHasSubModule.length > 0) {
-          const currentPath = getPathFromFile(subPath);
-          for (const thirdLevelModule of stillHasSubModule) {
-            if (this.checkIsModule(thirdLevelModule)) {
-              this.fileToMove.push({
-                from: addVueSuffix(`${currentPath}/${thirdLevelModule}`),
-                to:
-                  (await this.gotCopyDestination(
-                    `${currentPath}/${thirdLevelModule}`
-                  )) || null
-              });
-            }
-            // TODO: add more level or loop
-          }
-        } else {
-          console.log(addVueSuffix(subPath));
-          this.fileToMove.push({
-            from: addVueSuffix(subPath),
-            to: (await this.gotCopyDestination(subPath)) || null
-          });
-        }
+  async parseRouteModules(route): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let parsedRoute: RouterParseResult = await this.parseRouterConfig(
+          route
+        );
+        this.addModuleToList({
+          from: addVueSuffix(parsedRoute.fileRelativePath),
+          to:
+            (await this.gotCopyDestination(parsedRoute.fileRelativePath)) ||
+            null
+        });
+        // parse subModule
+        await this.parseSubModules(parsedRoute.fileRelativePath);
+        resolve();
+      } catch (error) {
+        debugger;
+        reject();
+        this.logger.error(new Error("[iterateRouter] error: " + error));
+        console.log(error);
       }
-      this.doFileCopy(this.fileToMove);
-    } catch (error) {
-      this.logger.error(new Error("[iterateRouter] error: " + error));
-      console.log(error);
-    }
+    });
+  }
+  /**
+   * parse subModules
+   */
+  async parseSubModules(moduleToCheck) {
+    return new Promise(async (resolve, reject) => {
+      
+    });
+  }
+  addModuleToList(moduleData: ModuleToMove) {
+    this.fileToMove.push(moduleData);
   }
   // copy files with this.fileToMove data
   async doFileCopy(files) {
@@ -93,6 +89,10 @@ export default class Generator {
       await copy(file.from, file.to);
     }
   }
+  /**
+   * return the absolute path bu got the path after /src/xx. based on project config
+   * @param componentPath path
+   */
   gotCopyDestination(componentPath): Promise<string> {
     let self = this;
     return new Promise((resolve, reject) => {
@@ -128,7 +128,8 @@ export default class Generator {
       let aliasToExclude = ["api", "fun"];
       try {
         const result = [];
-        let componentString = await readFile(componentPath);
+        debugger
+        let componentString = await readFile(addVueSuffix(componentPath));
         // has no js script. mean without sub modules
         if (
           !componentString.includes("<script>") &&
@@ -158,6 +159,11 @@ export default class Generator {
       }
     });
   }
+  /**
+   * parse router component fn and returun RouterParseResult
+   * @param route vue router config
+   * @returns {RouterParseResult} result
+   */
   parseRouterConfig(route): Promise<RouterParseResult> {
     let matchRoutePathRegex: RegExp = /require\('(.*?)'\)/g;
     return new Promise(async (resolve, reject) => {
@@ -178,16 +184,24 @@ export default class Generator {
       }
     });
   }
-
+  /**
+   * parse alias and return absolute path
+   * @param path import xx from '' value
+   */
   checkAlias(path): Promise<string> {
     return new Promise((resolve, reject) => {
-      // if(!path){
-      //     reject(`[Generator/checkAlias--no-data-with-path]:${path} `)
-      // }
       try {
         let matchAliasAtFirst: RegExp = /(.*?)\//;
-        if (matchAliasAtFirst.test(path)) {
+        if (matchAliasAtFirst.test(path) && !this.checkIsModule(path)) {
           let alias = matchAliasAtFirst.exec(path);
+          if(!this.projectConfig.alias[alias && alias[1]]){
+              resolve(path)
+              return
+          }
+          console.log(`${this.projectConfig.alias[alias && alias[1]]}/${path.replace(
+            `${alias[1]}/`,
+            ""
+          )}`);
           resolve(
             addVueSuffix(
               `${this.projectConfig.alias[alias && alias[1]]}/${path.replace(

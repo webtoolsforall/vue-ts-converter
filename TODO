@@ -1,12 +1,16 @@
 
 Lib:
-  ☐ 增加日志
+  ✔ 增加日志 @done(19-06-16 18:23)
   ☐ 增加commander
   ✔ 解析路由 @done(19-06-16 16:22)
-  ☐ 迁移文件 @started(19-06-15 16:43)
+  ✔ 迁移文件 @started(19-06-15 16:43) @done(19-06-16 18:24) @lasted(1d1h41m9s)
   ☐ 解析为ts
-  ☐ 分析组件依赖树
+  ✔ 分析组件依赖树 @done(19-06-16 21:35)
   ☐ 复制静态资源文件
+  @file:///Users/xiaoshuai/codes/vue-ts-converter/app/Generator.ts
+    ☐ // TODO: add more level or loop @file:///Users/xiaoshuai/codes/vue-ts-converter/app/Generator.ts#74 @started(19-06-16 18:52)
+  @file:///Users/xiaoshuai/codes/vue-ts-converter/app/logger/index.ts
+    ☐ //TODO: define winston as a component @file:///Users/xiaoshuai/codes/vue-ts-converter/app/logger/index.ts#4
   
 Parser:
   ☐ 实现watch
@@ -15,3 +19,5 @@ Parser:
   ☐ 实现filters
   ☐ 实现components
   ☐ 实现mixins
+Bugs: 
+  ☐ 文件读取路径为undefined @started(19-06-16 18:36)
