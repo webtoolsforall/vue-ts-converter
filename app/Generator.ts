@@ -11,28 +11,45 @@ import {
   parseComponentScript,
   addVueSuffix,
   getPathFromFile,
-  copy
+  copy,
+  flatVueRouterArray
 } from "./util";
-import winston from './logger';
-import { rejects } from "assert";
+import winston from "./logger";
 export default class Generator {
   vueRouter: Array<any> = [];
   projectConfig: VueTsConfig = null;
   fileToMove = [];
-  logger = null
+  logger = null;
 
   constructor(router: Array<any>, config: VueTsConfig) {
     this.vueRouter = router;
     this.projectConfig = config;
-    this.iterateRouter();
-    this.logger = winston
+    this.logger = winston;
+    this.start()
   }
-
-  async iterateRouter() {
+  async start () {
+      let vueRouter = await this.flatVueRouter(this.vueRouter)
+      vueRouter.forEach(d => {
+        this.parseSingleRoute(d)
+      })
+  }
+  async flatVueRouter(router): Promise<Array<any>> {
+    return new Promise((resolve, reject) => {
+      try {
+        const result = flatVueRouterArray(router);
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  /**
+   * parse single router and move it
+   * @param route vue router single route config
+   */
+  async parseSingleRoute(route) {
     try {
-      const router = this.vueRouter;
-    for (const d of router) {
-      let parsedRoute: RouterParseResult = await this.parseRouterConfig(d);
+      let parsedRoute: RouterParseResult = await this.parseRouterConfig(route);
       this.fileToMove.push({
         from: addVueSuffix(parsedRoute.fileRelativePath),
         to:
@@ -45,40 +62,41 @@ export default class Generator {
         if (stillHasSubModule.length > 0) {
           const currentPath = getPathFromFile(subPath);
           for (const thirdLevelModule of stillHasSubModule) {
-            if(this.checkIsModule(thirdLevelModule)){
+            if (this.checkIsModule(thirdLevelModule)) {
               this.fileToMove.push({
                 from: addVueSuffix(`${currentPath}/${thirdLevelModule}`),
-                to: (await this.gotCopyDestination(`${currentPath}/${thirdLevelModule}`)) || null
-              })
+                to:
+                  (await this.gotCopyDestination(
+                    `${currentPath}/${thirdLevelModule}`
+                  )) || null
+              });
             }
             // TODO: add more level or loop
           }
         } else {
-          console.log(addVueSuffix(subPath))
+          console.log(addVueSuffix(subPath));
           this.fileToMove.push({
             from: addVueSuffix(subPath),
             to: (await this.gotCopyDestination(subPath)) || null
           });
         }
       }
-      this.doFileCopy(this.fileToMove)
-    }
+      this.doFileCopy(this.fileToMove);
     } catch (error) {
-      this.logger.error(new Error('[iterateRouter] error: ' + error))
-        console.log(error)
+      this.logger.error(new Error("[iterateRouter] error: " + error));
+      console.log(error);
     }
-    
   }
   // copy files with this.fileToMove data
- async doFileCopy (files) {
+  async doFileCopy(files) {
     for (const file of files) {
-        await copy(file.from, file.to)
+      await copy(file.from, file.to);
     }
   }
   gotCopyDestination(componentPath): Promise<string> {
     let self = this;
-    try {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      try {
         let matchSrcRegexp = /(src.*"*)/;
         if (matchSrcRegexp.test(componentPath)) {
           let result = matchSrcRegexp.exec(componentPath);
@@ -87,17 +105,15 @@ export default class Generator {
             addVueSuffix(`${self.projectConfig.outPutPath}/${relativePath}`)
           );
         } else {
-          resolve(
-            addVueSuffix(`${componentPath}`)
-          );
+          resolve(addVueSuffix(`${componentPath}`));
         }
-      });
-    } catch (error) {
-      rejects(error);
-    }
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
-  checkIsModule (importPath:string): Boolean {
-    return importPath.startsWith('.')
+  checkIsModule(importPath: string): Boolean {
+    return importPath.startsWith(".");
   }
   /**
    * check if has import mark
@@ -108,8 +124,8 @@ export default class Generator {
   checkSubModules(
     componentPath: string
   ): Promise<Boolean | Array<string> | any> {
-   
     return new Promise(async (resolve, reject) => {
+      let aliasToExclude = ['api', 'fun']
       try {
         const result = [];
         let componentString = await readFile(componentPath);
@@ -127,9 +143,8 @@ export default class Generator {
         });
         resolve(result);
       } catch (error) {
-        reject(error)
+        reject(error);
       }
-      
     });
   }
   parseRouterConfig(route): Promise<RouterParseResult> {

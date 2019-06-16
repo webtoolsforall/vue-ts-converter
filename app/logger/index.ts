@@ -1,7 +1,7 @@
 
 const { createLogger, format, transports } = require('winston');
 const config:VueTsConfig = require('../../vue-converter.conf');
-
+//TODO: define winston as a component
 const logger = createLogger({
   level: 'info',
   format: format.combine(
