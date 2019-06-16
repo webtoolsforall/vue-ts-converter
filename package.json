@@ -51,6 +51,8 @@
     "esm": "^3.2.25",
     "mkdirp": "^0.5.1",
     "vue": "^2.6.10",
+    "vue-router": "^3.0.6",
+    "winston": "^3.2.1"
     "vue-router": "^3.0.6"
     "@vuese/parser": "^2.1.7"
     "typescript": "^3.3.3"
