@@ -48,7 +48,6 @@
     "@babel/parser": "^7.4.5",
     "@vuese/parser": "^2.1.7",
     "commander": "^2.20.0",
-    "esm": "^3.2.25",
     "mkdirp": "^0.5.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
