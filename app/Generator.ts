@@ -13,16 +13,19 @@ import {
   getPathFromFile,
   copy
 } from "./util";
+import winston from './logger';
 import { rejects } from "assert";
 export default class Generator {
   vueRouter: Array<any> = [];
   projectConfig: VueTsConfig = null;
   fileToMove = [];
+  logger = null
 
   constructor(router: Array<any>, config: VueTsConfig) {
     this.vueRouter = router;
     this.projectConfig = config;
     this.iterateRouter();
+    this.logger = winston
   }
 
   async iterateRouter() {
@@ -61,6 +64,7 @@ export default class Generator {
       this.doFileCopy(this.fileToMove)
     }
     } catch (error) {
+      this.logger.error(new Error('[iterateRouter] error: ' + error))
         console.log(error)
     }
     

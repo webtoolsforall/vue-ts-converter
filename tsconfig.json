@@ -8,7 +8,8 @@
     },
     "include": [
       "app/**/*.ts",
-      "types/index.d.ts"
+      "types/index.d.ts",
+      "node_modules/winston/index.d.ts"
     ],
     "exclude": [
       "node_modules"
