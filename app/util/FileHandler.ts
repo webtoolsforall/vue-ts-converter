@@ -1,6 +1,21 @@
 import * as fs from "fs";
-
-export const readFile = (path: string, opt: object = {encoding: 'utf-8'}): Promise<string> => {
+import * as mkdirp from 'mkdirp';
+import {getPathFromFile} from './';
+export const copy = (from, to): Promise<any> => {
+  const currentPath = getPathFromFile(to)
+  mkdirp(currentPath)
+  return new Promise((resolve, reject) => {
+    fs.copyFile(from, to, err => {
+      if (err) throw err;
+      console.log(`copy file :[${to}] success`);
+      resolve();
+    });
+  });
+};
+export const readFile = (
+  path: string,
+  opt: object = { encoding: "utf-8" }
+): Promise<string> => {
   return new Promise((resolve, reject) => {
     fs.readFile(path, opt, (err: Error, data: string) => {
       if (err) {
@@ -53,7 +68,9 @@ export const readFilesWithoutSuffix = dir => {
     });
     const filesNames = dirs
       .filter(d => d.includes(".") || d.name.includes("."))
-      .map(d => d.split(".").splice(0, 1)[0] || d.name.split(".").splice(0, 1)[0]);
+      .map(
+        d => d.split(".").splice(0, 1)[0] || d.name.split(".").splice(0, 1)[0]
+      );
     resolve(filesNames);
   });
 };

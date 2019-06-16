@@ -1,6 +1,17 @@
 
-Todo:
+Lib:
+  ☐ 增加日志
   ☐ 增加commander
-  ☐ 解析路由
+  ✔ 解析路由 @done(19-06-16 16:22)
+  ☐ 迁移文件 @started(19-06-15 16:43)
+  ☐ 解析为ts
+  ☐ 分析组件依赖树
+  ☐ 复制静态资源文件
   
-  
+Parser:
+  ☐ 实现watch
+  ☐ 实现computed
+  ☐ 实现props
+  ☐ 实现filters
+  ☐ 实现components
+  ☐ 实现mixins

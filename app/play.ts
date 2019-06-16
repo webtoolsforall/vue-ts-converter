@@ -1,3 +1,2 @@
-import {RouterFlatter} from './routerParse';
-let t = new RouterFlatter()
-t.readVueRouter()
+import Parser from './Parser';
+let t = new Parser()
