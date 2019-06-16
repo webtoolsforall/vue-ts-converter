@@ -10,3 +10,4 @@ chromedriver.log
 dist/
 source/
 logs/
+output/
