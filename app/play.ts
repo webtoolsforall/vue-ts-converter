@@ -1,2 +1,2 @@
-import Parser from './Parser';
-let t = new Parser()
+import Parser from './Parser/Parser';
+new Parser()

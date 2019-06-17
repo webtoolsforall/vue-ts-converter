@@ -14,8 +14,8 @@ import {
   copy,
   flatVueRouterArray,
   uniqArrayObject
-} from "./util";
-import winston from "./logger";
+} from "../util";
+import winston from "../logger";
 export default class Generator {
   vueRouter: Array<any> = [];
   projectConfig: VueTsConfig = null;
@@ -198,14 +198,10 @@ export default class Generator {
               resolve(path)
               return
           }
-          console.log(`${this.projectConfig.alias[alias && alias[1]]}/${path.replace(
-            `${alias[1]}/`,
-            ""
-          )}`);
           resolve(
             addVueSuffix(
               `${this.projectConfig.alias[alias && alias[1]]}/${path.replace(
-                `${alias[1]}/`,
+                `${alias && alias[1]}/`,
                 ""
               )}`
             )

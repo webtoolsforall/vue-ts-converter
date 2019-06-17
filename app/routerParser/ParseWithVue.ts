@@ -8,9 +8,7 @@ export default class ParseWithVue {
         const vm = new Vue({
             router
         })
-        this.vueRouters = vm && vm.$router && vm.$router.options && vm.$router.options.routes
-        // console.log('got routes')
-        // console.log(this.vueRouters) 
+        this.vueRouters =  vm.$router && vm.$router.options && vm.$router.options.routes
     }
 
     getRoutes (): Array<object> {
