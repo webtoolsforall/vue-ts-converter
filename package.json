@@ -39,7 +39,7 @@
     "@types/jest": "^24.0.11",
     "@types/node": "^11.13.4",
     "chalk": "^2.4.2",
-    "typescript": "^3.3.3"
+    "typescript": "^3.3.3",
     "jest": "^24.7.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.3"
@@ -48,9 +48,13 @@
     "@babel/parser": "^7.4.5",
     "@vuese/parser": "^2.1.7",
     "commander": "^2.20.0",
+    "lodash.flatmap": "^4.5.0",
+    "lodash.flattendepth": "^4.7.0",
     "mkdirp": "^0.5.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
+    "winston": "^3.2.1",
+    "xmldom": "^0.1.27"
     "winston": "^3.2.1"
     "vue-router": "^3.0.6"
     "@vuese/parser": "^2.1.7"
