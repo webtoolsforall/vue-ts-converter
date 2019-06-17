@@ -13,9 +13,6 @@ export default class RouterFlatter {
     let routerContent = await readFile(`${this.CONFIG_FILE_DIR}/${this.routerFiles[d]}.js`)
     this.routerData.push(this.parseES6RouterString(routerContent)) 
    }
-   let test = this.flatter(this.routerData)
-   let testt = this.flatter(test)
-   debugger
   }
   parseES6RouterString(routerFile: string): Array<Object>{
     const removeExportReg = /export.*?default\s+/g

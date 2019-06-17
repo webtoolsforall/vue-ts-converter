@@ -10,7 +10,6 @@ class DataBus {
 		logger.info('data bus init');
 	}
 	async add(moduleData: ModuleToMove) {
-		
 		logger.info(`[DataBus.add] copy file from: ${moduleData.from} to :${moduleData.to}`);
 		await copy(moduleData.from, moduleData.to);
 		this.data.push(moduleData);

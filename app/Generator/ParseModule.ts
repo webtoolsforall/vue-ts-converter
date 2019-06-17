@@ -70,6 +70,8 @@ export default class ParseModule {
 			try {
 				const result = [];
 				let componentString = await readFile(addVueSuffix(componentPath));
+			let test = 	new DOMParser().parseFromString(componentString)
+			debugger
 				// has no js script. mean without sub modules
 				if (
 					!componentString.includes('<script>') &&
@@ -98,6 +100,11 @@ export default class ParseModule {
 				reject(error);
 			}
 		});
+	}
+
+	checkStaticResource (componentPath: string) :Promise<Boolean | Array<string> | any>{
+
+		return
 	}
 	/**
 	 * parse alias and return absolute path
