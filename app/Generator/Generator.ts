@@ -7,7 +7,6 @@
  * 4. parse component content and copy other file
  */
 import {
-  addVueSuffix,
   copy,
   flatVueRouterArray,
   uniqArrayObject
