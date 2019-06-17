@@ -5,13 +5,12 @@
  * 2. generate nuxt.js router with given vue router (as file path)
  */
 import { ParseWithVue } from "../routerParser";
-const config = require('../vue-converter.conf');
-import {Generator} from '../Generator';
+const config = require('../../vue-converter.conf');
+import Generator from '../Generator/Generator';
 import winston from '../logger';
 export default class Parser {
   vueRoutes: Array<object> = []; //vue router read from router config file
   projectConfig: VueTsConfig = null
-  generatorInstance: Generator = null
   logger = null
   constructor() {
       this.init()
@@ -20,7 +19,7 @@ export default class Parser {
   async init() {
     this.vueRoutes = await this.getVueRoutes();
     this.projectConfig = config
-    this.generatorInstance = new Generator(this.vueRoutes, this.projectConfig)
+    new Generator(this.vueRoutes, this.projectConfig)
     this.logger.log({
       level: 'info',
       message: this.vueRoutes

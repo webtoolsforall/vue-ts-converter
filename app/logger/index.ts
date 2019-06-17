@@ -19,7 +19,7 @@ const logger = createLogger({
     // - Write all logs error (and below) to `error.log`.
     //
     new transports.File({ filename: `${config.logPath}/vntc-error.log`, level: 'error' }),
-    new transports.File({ filename: `${config.logPath}/vntc-copy.log`, level: 'notice' }),
+    new transports.File({ filename: `${config.logPath}/vntc-warn.log`, level: 'warn' }),
     new transports.File({ filename: `${config.logPath}/vntc.log` })
   ]
 });

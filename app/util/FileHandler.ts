@@ -1,13 +1,13 @@
 import * as fs from "fs";
 import * as mkdirp from 'mkdirp';
 import {getPathFromFile} from './';
-import winston from '../logger';
+import logger from '../logger';
 export const copy = (from, to): Promise<any> => {
   mkdirp.sync(getPathFromFile(to))
   return new Promise((resolve, reject) => {
     fs.copyFile(from, to, err => {
       if (err) throw err;
-      console.log(`copy file :[${to}] success`);
+      logger.info(`copy file :[${to}] success`);
       resolve();
     });
   });

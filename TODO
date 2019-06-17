@@ -5,12 +5,8 @@ Lib:
   ✔ 解析路由 @done(19-06-16 16:22)
   ✔ 迁移文件 @started(19-06-15 16:43) @done(19-06-16 18:24) @lasted(1d1h41m9s)
   ☐ 解析为ts
-  ✔ 分析组件依赖树 @done(19-06-16 21:35)
+  ☐ 分析组件依赖树 @started(19-06-17 16:24)
   ☐ 复制静态资源文件
-  @file:///Users/xiaoshuai/codes/vue-ts-converter/app/Generator.ts
-    ☐ // TODO: add more level or loop @file:///Users/xiaoshuai/codes/vue-ts-converter/app/Generator.ts#74 @started(19-06-16 18:52)
-  @file:///Users/xiaoshuai/codes/vue-ts-converter/app/logger/index.ts
-    ☐ //TODO: define winston as a component @file:///Users/xiaoshuai/codes/vue-ts-converter/app/logger/index.ts#4
   
 Parser:
   ☐ 实现watch

@@ -11,3 +11,9 @@
         from: string,
         to: string
     }
+    interface DataBus {
+        addDependence (dependence: string)
+        getDependencies (): Array<string>
+        add(d:ModuleToMove)
+        busData(): Array<any>
+    }
