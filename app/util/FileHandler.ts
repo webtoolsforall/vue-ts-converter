@@ -1,29 +1,29 @@
-import * as fs from "fs";
-import * as mkdirp from 'mkdirp';
-import {getPathFromFile} from './';
+import * as fs from 'fs';
+import * as mkdirp from 'mkdirp-promise';
+import { getPathFromFile } from './';
 import logger from '../logger';
-export const copy = (from, to): Promise<any> => {
-  mkdirp.sync(getPathFromFile(to))
-  return new Promise((resolve, reject) => {
-    fs.copyFile(from, to, err => {
-      if (err) throw err;
-      logger.info(`copy file :[${to}] success`);
-      resolve();
-    });
-  });
+export const copy = async (from, to): Promise<any> => {
+	await mkdirp(getPathFromFile(to));
+	return new Promise((resolve, reject) => {
+		fs.copyFile(from.trim(), to.trim(), err => {
+		  if (err) throw err;
+		  logger.info(`copy file :[${to}] success`);
+		  resolve();
+		});
+	});
 };
 export const readFile = (
-  path: string,
-  opt: object = { encoding: "utf-8" }
+	path: string,
+	opt: object = { encoding: 'utf-8' }
 ): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, opt, (err: Error, data: string) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(data);
-    });
-  });
+	return new Promise((resolve, reject) => {
+		fs.readFile(path, opt, (err: Error, data: string) => {
+			if (err) {
+				reject(err);
+			}
+			resolve(data);
+		});
+	});
 };
 /**
  *
@@ -32,18 +32,18 @@ export const readFile = (
  * @param opt 选项
  */
 export const writeFile = (
-  path: string,
-  data: string | Buffer,
-  opt: object
+	path: string,
+	data: string | Buffer,
+	opt: object
 ): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path, data, opt, err => {
-      if (err) {
-        reject(err);
-      }
-      resolve("success");
-    });
-  });
+	return new Promise((resolve, reject) => {
+		fs.writeFile(path, data, opt, err => {
+			if (err) {
+				reject(err);
+			}
+			resolve('success');
+		});
+	});
 };
 /**
  *
@@ -51,26 +51,26 @@ export const writeFile = (
  * @param options fs.readdir opt
  */
 export const readFilesUnderDir = (dir, options) => {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dir, options, (err, files) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(files);
-    });
-  });
+	return new Promise((resolve, reject) => {
+		fs.readdir(dir, options, (err, files) => {
+			if (err) {
+				reject(err);
+			}
+			resolve(files);
+		});
+	});
 };
 
 export const readFilesWithoutSuffix = dir => {
-  return new Promise((resolve, reject) => {
-    const dirs = fs.readdirSync(dir, {
-      withFileTypes: true
-    });
-    const filesNames = dirs
-      .filter(d => d.includes(".") || d.name.includes("."))
-      .map(
-        d => d.split(".").splice(0, 1)[0] || d.name.split(".").splice(0, 1)[0]
-      );
-    resolve(filesNames);
-  });
+	return new Promise((resolve, reject) => {
+		const dirs = fs.readdirSync(dir, {
+			withFileTypes: true
+		});
+		const filesNames = dirs
+			.filter(d => d.includes('.') || d.name.includes('.'))
+			.map(
+				d => d.split('.').splice(0, 1)[0] || d.name.split('.').splice(0, 1)[0]
+			);
+		resolve(filesNames);
+	});
 };

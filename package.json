@@ -40,12 +40,14 @@
   "dependencies": {
     "@babel/parser": "^7.4.5",
     "commander": "^2.20.0",
+    "fs-extra": "^8.0.1",
     "lodash.flatmap": "^4.5.0",
     "lodash.flattendepth": "^4.7.0",
     "mkdirp": "^0.5.1",
+    "mkdirp-promise": "^5.0.1",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",
-    "winston": "^3.2.1",
-    "xmldom": "^0.1.27"
+    "vue-template-compiler": "^2.6.10",
+    "winston": "^3.2.1"
   }
 }

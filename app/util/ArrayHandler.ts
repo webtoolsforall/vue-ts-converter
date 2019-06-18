@@ -21,11 +21,6 @@ export const flatVueRouterArray = (arr): Array<any> => {
 			return r;
 		}
 	});
-	// return arr.reduce(function(flat, toFlatten) {
-	//   return flat.concat(
-	//    toFlatten.children ? flatVueRouterArray(toFlatten.children) : toFlatten
-	//   ).concat(toFlatten);
-	// }, []);
 };
 
 export const uniqArrayObject = (array, param): Array<any> => {

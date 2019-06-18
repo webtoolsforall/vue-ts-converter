@@ -2,7 +2,11 @@ import {
 	readFile,
 	parseComponentScript,
 	addVueSuffix,
-	getPathFromFile
+	getPathFromFile,
+	parseVueSFC,
+	compileTemplateToGetAst,
+	flatAst,
+	getStaticElements
 } from '../util';
 import DataBus from './DataBus';
 import winston from '../logger';
@@ -19,39 +23,115 @@ export default class ParseModule {
 	/**
 	 * parse subModules
 	 */
-	async parseSubModules(moduleToCheck):Promise<any> {
-		logger.info(`[parseSubModules] parsing file: ${moduleToCheck}`);
-		return new Promise(async (resolve, reject) => {
-			let path = getPathFromFile(moduleToCheck);
-			const busGoods: ModuleToMove = {
-				from: addVueSuffix(moduleToCheck),
-				to: await this.gotCopyDestination(addVueSuffix(moduleToCheck))
-			};
-			logger.info(`[parseSubModules] got fil to copy: ${busGoods}`);
-			this.bus.add(busGoods);
-			let modules = await this.checkSubModules(moduleToCheck);
-			if (modules.length > 0) {
-				this.logger.info(
-					`[parseSubModules] got subModules: ${modules} from : ${moduleToCheck}`
-				);
-				for (const subModule of modules) {
-					logger.info(`[parseSubModules] looping module ${subModule}`)
-					if (this.checkIsModule(subModule)) {
-						logger.info(`[parseSubModules] find module:${subModule} to be handle`);
-						logger.info(`[parseSubModules] will parse ${path}/${subModule}`);
-						 this.parseSubModules(`${path}/${subModule}`);
-					} else {
-						logger.info(`[parseSubModules] find dependencies/alias:${subModule} to be handle`);
-						let aliasParsePath = await this.checkAlias(subModule);
-						 this.parseSubModules(aliasParsePath);
-					}
-				}
-			} else {
-				logger.info(`got no module with ${moduleToCheck}`)
-				resolve()
+	async parseSubModules(moduleToCheck): Promise<any> {
+		try {
+			if(!moduleToCheck){
+				return
 			}
+			logger.info(`[parseSubModules] parsing file: ${moduleToCheck}`);
+			return new Promise(async (resolve, reject) => {
+				const busGoods: ModuleToMove = {
+					from: addVueSuffix(moduleToCheck),
+					to: await this.gotCopyDestination(addVueSuffix(moduleToCheck))
+				};
+				logger.info(`[parseSubModules] got fil to copy: ${busGoods}`);
+				this.bus.add(busGoods);
+				let modules = await this.checkSubModules(moduleToCheck);
+				this.loopJsModules(modules, moduleToCheck);
+				this.checkTemplateStatic(moduleToCheck);
+				resolve();
+			});
+		} catch (error) {
+			this.logger.error(`[parseSubModules] failed with error: ${error}`);
+		}
+	}
+	async loopJsModules(modules, moduleToCheck) {
+		let path = getPathFromFile(moduleToCheck);
+		if (modules.length > 0) {
+			this.logger.info(
+				`[parseSubModules] got subModules: ${modules} from : ${moduleToCheck}`
+			);
+			for (const subModule of modules) {
+				logger.info(`[parseSubModules] looping module ${subModule}`);
+				if (this.checkIsModule(subModule)) {
+					logger.info(
+						`[parseSubModules] find module:${subModule} to be handle`
+					);
+					logger.info(`[parseSubModules] will parse ${path}/${subModule}`);
+					this.parseSubModules(`${path}/${subModule}`);
+				} else {
+					logger.info(
+						`[parseSubModules] find dependencies/alias:${subModule} to be handle`
+					);
+					let aliasParsePath = await this.checkAlias(subModule);
+					this.parseSubModules(aliasParsePath);
+				}
+			}
+		} else {
+			logger.info(`got no module with ${moduleToCheck}`);
+		}
+	}
+	checkTemplateStatic(componentPath: string) {
+		return new Promise(async (resolve, reject) => {
+			if(!addVueSuffix(componentPath).endsWith('vue')){
+				logger.info(`[checkTemplateStatic] found none vue file:${componentPath}`)
+				resolve()
+				return
+			}
+			let componentTemplate = await parseVueSFC(
+				addVueSuffix(componentPath),
+				'template'
+			);
+			let staticResources = await getStaticElements(
+				flatAst(compileTemplateToGetAst(componentTemplate))
+			);
+			// parse static resource when got
+			if (staticResources.length > 0) {
+				await this.parseStaticResource(staticResources);
+			}
+			this.logger.info(
+				`[checkTemplateStatic] got resources: ${staticResources.toString()} from: ${componentPath}`
+			);
 			resolve();
 		});
+	}
+	parseStaticResource(resources) {
+		return new Promise((resolve, reject) => {
+			resources.forEach(async d => {
+				if (d.attrsMap['src']) {
+					let staticPath = await this.checkAlias(d.attrsMap['src']);
+					let destination = await this.parseStaticDestination(staticPath)
+					try {
+						this.bus.add({
+							from: staticPath.startsWith('/static') ? `${this.projectConfig.copyFromStatic}${staticPath} `: staticPath,
+							to: destination
+						})
+					} catch (error) {
+						this.logger.error(`[parseStaticResource] error: ${error}`)
+					}
+					
+					
+				}
+			});
+		});
+	}
+	parseStaticDestination(from):Promise<any>{
+		return new Promise(async (resolve, reject)=>{
+			const staticRegexp = /^\/static\/(.*)"*/gm
+			if(staticRegexp.test(from)){
+				let result = from.match(staticRegexp)
+				debugger
+				// TODO: remove static from regexp
+				resolve(`${this.projectConfig.staticResourcePath}${result && result[0]}`)
+			} else if (from.includes('src/assets')){
+				let srcMatcher = /src\/(.*)"*/gm
+				// let result = `${this.projectConfig.outPutPath}/${from.match(srcMatcher)[0]}`
+				resolve(`${this.projectConfig.outPutPath}/${from.match(srcMatcher)[0]}`)	
+			} 
+			else {
+				this.logger.error(`[parseStaticDestination] unmatched param:${from}`)
+			}
+		})
 	}
 	checkIsModule(importPath: string): Boolean {
 		return importPath.startsWith('.');
@@ -69,21 +149,11 @@ export default class ParseModule {
 			let aliasToExclude = ['api', 'fun'];
 			try {
 				const result = [];
-				let componentString = await readFile(addVueSuffix(componentPath));
-			let test = 	new DOMParser().parseFromString(componentString)
-			debugger
-				// has no js script. mean without sub modules
-				if (
-					!componentString.includes('<script>') &&
-					!componentString.includes('</script>')
-				) {
+				let componentJsCode = await parseVueSFC(addVueSuffix(componentPath));
+				if (!componentJsCode) {
 					resolve(result);
-					return;
+					return
 				}
-				// 8 is the length of '<script>'
-				const startPoint = componentString.indexOf('<script>') + 8;
-				const endPoint = componentString.indexOf('</script>');
-				let componentJsCode = componentString.substring(startPoint, endPoint);
 				let {
 					program: { body: parseResult }
 				} = await parseComponentScript(componentJsCode);
@@ -102,9 +172,10 @@ export default class ParseModule {
 		});
 	}
 
-	checkStaticResource (componentPath: string) :Promise<Boolean | Array<string> | any>{
-
-		return
+	checkStaticResource(
+		componentPath: string
+	): Promise<Boolean | Array<string> | any> {
+		return;
 	}
 	/**
 	 * parse alias and return absolute path
@@ -131,14 +202,6 @@ export default class ParseModule {
 								''
 							)}`
 						)} with data: ${path}`
-					);
-					console.log(
-						addVueSuffix(
-							`${self.projectConfig.alias[alias && alias[1]]}/${path.replace(
-								`${alias && alias[1]}/`,
-								''
-							)}`
-						)
 					);
 					resolve(
 						addVueSuffix(
