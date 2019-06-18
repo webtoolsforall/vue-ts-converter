@@ -1,5 +1,4 @@
 import {
-	readFile,
 	parseComponentScript,
 	addVueSuffix,
 	getPathFromFile,
