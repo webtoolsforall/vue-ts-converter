@@ -3,6 +3,7 @@
  */
 import { copy } from '../util';
 import logger from '../logger';
+import GenerateTs from '../TsConverter/GenerateTs';
 class DataBus {
 	data: Array<any> = [];
 	dependencies = [];
@@ -11,6 +12,7 @@ class DataBus {
 	}
 	async add(moduleData: ModuleToMove) {
 		logger.info(`[DataBus.add] copy file from: ${moduleData.from} to :${moduleData.to}`);
+		new GenerateTs(moduleData.from)
 		await copy(moduleData.from, moduleData.to);
 		this.data.push(moduleData);
 	}

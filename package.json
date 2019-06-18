@@ -38,9 +38,13 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
+    "@babel/generator": "^7.4.4",
     "@babel/parser": "^7.4.5",
+    "@babel/template": "^7.4.4",
+    "acorn": "^6.1.1",
     "commander": "^2.20.0",
     "fs-extra": "^8.0.1",
+    "handlebars": "^4.1.2",
     "lodash.flatmap": "^4.5.0",
     "lodash.flattendepth": "^4.7.0",
     "mkdirp": "^0.5.1",
