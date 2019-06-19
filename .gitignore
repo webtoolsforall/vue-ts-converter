@@ -9,6 +9,6 @@ yarn-error.log*
 chromedriver.log
 dist/
 source/
-logs/
+logs/*
 output/
 *.todo

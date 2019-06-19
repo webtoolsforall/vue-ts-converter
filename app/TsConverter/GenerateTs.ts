@@ -12,6 +12,7 @@ export default class GenerateTs {
 			ecmaVersion: 10
 		});
 		console.log(data);
+		debugger
 		let test = {
 			components: [
 				{ name: 'logo', path: 'src/logo/ss' },
