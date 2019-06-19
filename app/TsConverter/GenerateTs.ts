@@ -17,7 +17,8 @@ export default class GenerateTs {
 			components: [
 				{ name: 'logo', path: 'src/logo/ss' },
 				{ name: 'logo1', path: 'src/logo/ss1' }
-			]
+			],
+			componentName: 'Test'
 		};
 		let result = new VueTsTemplate(test).build();
 		debugger;

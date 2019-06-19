@@ -1,7 +1,7 @@
 const Handlebars = require('handlebars');
 
 export default class VueTsTemplate {
-    renderData = []
+    renderData: TemplateData = null 
 	constructor(data:TemplateData) {
 		this.renderData = data
 	}

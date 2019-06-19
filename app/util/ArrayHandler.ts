@@ -34,9 +34,3 @@ export const uniqArrayObject = (array, param): Array<any> => {
 		);
 	});
 };
-
-export const uniqArrayObject = (array, param):Array<any> => {
-  return array.filter(function(item, pos, array){
-    return array.map(function(mapItem){ return mapItem[param]; }).indexOf(item[param]) === pos;
-})
-}
