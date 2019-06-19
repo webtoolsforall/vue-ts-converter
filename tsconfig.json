@@ -4,15 +4,15 @@
       "module": "commonjs",
       "outDir": "dist",
       "sourceMap": true,
-      "types": ["node"]
+      "types": ["node", "mocha", "jest"]
     },
     "include": [
       "app/**/*.ts",
-      "types/index.d.ts",
-      "node_modules/winston/index.d.ts"
+      "types/index.d.ts"
     ],
     "exclude": [
-      "node_modules"
+      "node_modules",
+      "**/*.spec.ts"
     ],
     "allowJs": true
   }

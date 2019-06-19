@@ -1,6 +1,6 @@
 import {
 	parseComponentScript,
-	addVueSuffix,
+	addSuffix,
 	getPathFromFile,
 	parseVueSFC,
 	compileTemplateToGetAst,
@@ -30,8 +30,8 @@ export default class ParseModule {
 			logger.info(`[parseSubModules] parsing file: ${moduleToCheck}`);
 			return new Promise(async (resolve, reject) => {
 				const busGoods: ModuleToMove = {
-					from: addVueSuffix(moduleToCheck),
-					to: await this.gotCopyDestination(addVueSuffix(moduleToCheck))
+					from: addSuffix(moduleToCheck),
+					to: await this.gotCopyDestination(addSuffix(moduleToCheck))
 				};
 				logger.info(`[parseSubModules] got fil to copy: ${busGoods}`);
 				this.bus.add(busGoods);
@@ -72,13 +72,13 @@ export default class ParseModule {
 	}
 	checkTemplateStatic(componentPath: string) {
 		return new Promise(async (resolve, reject) => {
-			if(!addVueSuffix(componentPath).endsWith('vue')){
+			if(!addSuffix(componentPath).endsWith('vue')){
 				logger.info(`[checkTemplateStatic] found none vue file:${componentPath}`)
 				resolve()
 				return
 			}
 			let componentTemplate = await parseVueSFC(
-				addVueSuffix(componentPath),
+				addSuffix(componentPath),
 				'template'
 			);
 			let staticResources = await getStaticElements(
@@ -148,7 +148,7 @@ export default class ParseModule {
 			let aliasToExclude = ['api', 'fun'];
 			try {
 				const result = [];
-				let componentJsCode = await parseVueSFC(addVueSuffix(componentPath));
+				let componentJsCode = await parseVueSFC(addSuffix(componentPath));
 				if (!componentJsCode) {
 					resolve(result);
 					return
@@ -195,7 +195,7 @@ export default class ParseModule {
 						return;
 					}
 					self.logger.info(
-						`[checkAlias] return: ${addVueSuffix(
+						`[checkAlias] return: ${addSuffix(
 							`${this.projectConfig.alias[alias && alias[1]]}/${path.replace(
 								`${alias && alias[1]}/`,
 								''
@@ -203,7 +203,7 @@ export default class ParseModule {
 						)} with data: ${path}`
 					);
 					resolve(
-						addVueSuffix(
+						addSuffix(
 							`${self.projectConfig.alias[alias && alias[1]]}/${path.replace(
 								`${alias && alias[1]}/`,
 								''
@@ -240,10 +240,10 @@ export default class ParseModule {
 					let result = matchSrcRegexp.exec(componentPath);
 					let relativePath = result[1].replace('"', '');
 					resolve(
-						addVueSuffix(`${self.projectConfig.outPutPath}/${relativePath}`)
+						addSuffix(`${self.projectConfig.outPutPath}/${relativePath}`)
 					);
 				} else {
-					resolve(addVueSuffix(`${componentPath}`));
+					resolve(addSuffix(`${componentPath}`));
 				}
 			} catch (error) {
 				reject(error);

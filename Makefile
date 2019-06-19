@@ -31,6 +31,11 @@ run:
 
 start: clear run
 
+test: 
+	npm test
+test-watch: 
+	echo 'watch'
+
 help:
 	@echo "   \033[35mmake\033[0m \033[1musage\033[0m"
 	@echo "   \033[35mmake install\033[0m\t\033[0m\t\033[0m\t\033[0m\t---  install dependecies"
