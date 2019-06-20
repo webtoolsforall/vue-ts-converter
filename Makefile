@@ -33,8 +33,8 @@ start: clear run
 
 test: 
 	npm test
-test-watch: 
-	echo 'watch'
+test-w: 
+	npm run test:watch
 
 help:
 	@echo "   \033[35mmake\033[0m \033[1musage\033[0m"

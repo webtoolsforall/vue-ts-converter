@@ -1,6 +1,6 @@
 
 const Vue = require('vue');
-const router = require('../../source/src/router/index');
+const router = require('../../source/router/index');
 export default class ParseWithVue {
    vueRouters: Array<object> = []
 

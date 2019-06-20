@@ -1,5 +1,8 @@
-import { parseComponentScript, readFile, parseVueSFC } from '../util';
-const acorn = require('acorn');
+import {
+	parseComponentScript,
+	parseVueSFC,
+	traverseCode
+} from '../util';
 import VueTsTemplate from './VueTsTemplate';
 export default class GenerateTs {
 	constructor(path: string) {
@@ -7,12 +10,9 @@ export default class GenerateTs {
 	}
 
 	async start(path) {
-		let data = acorn.parse(await parseVueSFC(path), {
-			sourceType: 'module',
-			ecmaVersion: 10
-		});
-		console.log(data);
-		debugger
+		let data = await parseComponentScript(await parseVueSFC(path));
+		traverseCode(data, path);
+		debugger;
 		let test = {
 			components: [
 				{ name: 'logo', path: 'src/logo/ss' },

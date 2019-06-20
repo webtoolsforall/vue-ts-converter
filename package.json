@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --config=tests/unit/jest.config.js",
+    "test:watch": "jest --watch",
     "build": "tsc",
     "dev": "tsc -w --allowJs",
     "build:js": "babel app --out-dir dist --extensions \".ts,.tsx\" --source-maps inline"
@@ -46,6 +47,7 @@
     "@babel/generator": "^7.4.4",
     "@babel/parser": "^7.4.5",
     "@babel/template": "^7.4.4",
+    "@babel/traverse": "^7.4.5",
     "acorn": "^6.1.1",
     "commander": "^2.20.0",
     "fs-extra": "^8.0.1",

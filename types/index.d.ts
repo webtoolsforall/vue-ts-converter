@@ -3,3 +3,4 @@
 /// <reference path="./Parser.d.ts" /> 
 /// <reference path="./config.d.ts" /> 
 /// <reference path="./VueTsTemplate.d.ts" /> 
+/// <reference path="./BabelParser.d.ts" /> 

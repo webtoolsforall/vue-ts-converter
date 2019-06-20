@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "module": "commonjs",
-      "outDir": "dist",
-      "sourceMap": true,
-      "types": ["node", "mocha", "jest"]
-    },
-    "include": [
-      "app/**/*.ts",
-      "types/index.d.ts"
-    ],
-    "exclude": [
-      "node_modules",
-      "**/*.spec.ts"
-    ],
-    "allowJs": true
-  }
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "types": ["node", "mocha", "jest", "babel__core", "babel__generator", "babel__template", "babel__traverse"]
+  },
+  "include": [
+    "app/**/*.ts",
+    "types/index.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "allowJs": true
+}

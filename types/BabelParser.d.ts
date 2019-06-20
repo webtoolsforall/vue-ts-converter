@@ -1,0 +1,3 @@
+interface TraverseResult extends TemplateData {
+    
+}

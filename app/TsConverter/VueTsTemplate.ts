@@ -1,5 +1,4 @@
 const Handlebars = require('handlebars');
-
 export default class VueTsTemplate {
     renderData: TemplateData = null 
 	constructor(data:TemplateData) {
@@ -17,24 +16,9 @@ export default class VueTsTemplate {
                 }
         }) 
         export default class {{componentName}} extends Vue {
-            testData:string = 'inited'
-            @Prop(String) readonly str!: string
-            @Prop({default: 'defaults'}) defaultValue!: string
-            @Watch('testData')
-            onChanged(val){
-              console.log('watch triggerd')
-              console.log(val);
-            }
-          
-            sayHi ():void {
-              console.log('hello')
-              setTimeout(() => {
-                this.testData = '456'
-              }, 1000);
-            }
-            mounted(){
-              this.sayHi()
-            }
+            {{#data}}
+              {{key}}:{{type}} = {{value}}
+            {{/data}}
           }
         `;
 		let template = Handlebars.compile(vueFile);
