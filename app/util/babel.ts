@@ -44,7 +44,8 @@ export const traverseCode = (ast, path) => {
 		componentName: '',
 		components: [],
 		modules: [],
-		data: []
+		data: [],
+		props: []
 	};
 	traverse(ast, {
 		enter(path) {
@@ -99,7 +100,33 @@ export const traverseCode = (ast, path) => {
 			}
 			// get props
 			if(path.isObjectProperty() && path.node.key.name === 'props'){
-
+				path.traverse({
+					enter(path){
+						if(path.isObjectMember()){
+							let prop = {
+								key: path.node.key.name,
+								type: 'any'
+							}
+							
+							path.traverse({
+								enter(path){
+									if(path.isIdentifier({name: 'default'})){
+										prop.default = path.parent.value.value
+										// debugger
+									}
+									if(path.isIdentifier({name: 'required'})){
+										prop.required = path.parent.value.value
+										// debugger
+									}
+								}
+							})
+							result.props.push(prop)
+							console.log(result)
+							debugger
+						}
+					}
+				})
+					debugger
 			}
 		}
 	});
