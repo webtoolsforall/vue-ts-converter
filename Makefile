@@ -34,7 +34,7 @@ start: clear run
 test: 
 	npm test
 test-w: 
-	npm run test:watch
+	npm run test:watch $(filter-out $@,$(MAKECMDGOALS))
 
 help:
 	@echo "   \033[35mmake\033[0m \033[1musage\033[0m"

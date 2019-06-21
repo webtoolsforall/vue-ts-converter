@@ -19,6 +19,7 @@ export default class VueTsTemplate {
             {{#data}}
               {{key}}:{{type}} = {{value}}
             {{/data}}
+            
           }
         `;
 		let template = Handlebars.compile(vueFile);

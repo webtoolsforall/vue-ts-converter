@@ -1,7 +1,7 @@
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import generate from '@babel/generator';
-import { ASTNode } from 'vue-template-compiler';
+// import * as t from '@babel/types';
 export const parseComponentScript = (
 	code,
 	opt: parser.ParserOptions = {
@@ -43,20 +43,31 @@ export const traverseCode = (ast, path) => {
 	let result: TraverseResult = {
 		componentName: '',
 		components: [],
+		modules: [],
 		data: []
 	};
 	traverse(ast, {
 		enter(path) {
-			// get components
+			// get modules
 			if (path.isImportDeclaration()) {
-				result.components.push({
+				result.modules.push({
 					name: path.node.specifiers[0].local.name,
 					value: path.node.source.value
 				});
 			}
-			// verify components is used
-			if(path.isIdentifier({ name: 'components' })){
-				debugger
+
+			// verify components 
+			if (path.isObjectProperty() && path.node.key.name === 'components') {
+				path.traverse({
+					enter(path) {
+						if (path.isObjectProperty()) {
+							result.components.push({
+								name: path.node.key.name,
+								value: path.node.value.name
+							})
+						}
+					}
+				});
 			}
 			// get componentName
 			if (path.isIdentifier({ name: 'name' })) {
@@ -64,39 +75,31 @@ export const traverseCode = (ast, path) => {
 					result.componentName = path.parent.value.value;
 				}
 			}
-			// get data
+			// get data()
 			if (path.isObjectMethod() && path.node.key.name === 'data') {
-				traverse(
-					path.node,
-					{
-						enter(path) {
-							if (path.isReturnStatement()) {
-								traverse(
-									path.node,
-									{
-										enter(path) {
-											if (path.isObjectProperty()) {
-												if (path.isArrayExpression) {
-													result.data.push({
-														key: path.node.key.name,
-														value: path.node.value.elements
-													});
-												} else {
-													result.data.push({
-														key: path.node.key.name,
-														value: path.node.value.value
-													});
-												}
-											}
-										}
-									},
-									path.node
-								);
-							}
+				path.traverse({
+					enter(path) {
+						if (path.isArrayExpression()) {
+							result.data.push({
+								key: path.parent.key.name,
+								value: path.node.elements
+							});
 						}
-					},
-					path.node
-				);
+						if (
+							path.isObjectProperty() &&
+							path.node.value.type !== 'ArrayExpression'
+						) {
+							result.data.push({
+								key: path.node.key.name,
+								value: path.node.value.value
+							});
+						}
+					}
+				});
+			}
+			// get props
+			if(path.isObjectProperty() && path.node.key.name === 'props'){
+
 			}
 		}
 	});
@@ -105,7 +108,6 @@ export const traverseCode = (ast, path) => {
 };
 
 export const generateCode = (ast, opt: object = { sourceMaps: true }) => {
-	console.log(generate(ast));
-	debugger;
-	return generate(ast).code;
+	let result = generate(ast);
+	console.log(result);
 };

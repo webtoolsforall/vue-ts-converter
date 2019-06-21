@@ -28,7 +28,7 @@
   "homepage": "https://github.com/me-jser/vue-ts-converter#readme",
   "devDependencies": {
     "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.4.0",
+    "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
     "@babel/preset-env": "^7.4.1",
@@ -48,6 +48,7 @@
     "@babel/parser": "^7.4.5",
     "@babel/template": "^7.4.4",
     "@babel/traverse": "^7.4.5",
+    "@babel/types": "^7.4.4",
     "acorn": "^6.1.1",
     "commander": "^2.20.0",
     "fs-extra": "^8.0.1",
