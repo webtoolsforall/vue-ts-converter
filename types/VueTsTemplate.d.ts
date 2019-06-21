@@ -3,8 +3,8 @@ interface TemplateData {
     data?: Array<{key: string, type?: string, value:string}>;
     methods?: Array<string>;
     componentName: string;
-    props?: Array<{type?:string, required?: boolean, default?:any}>;
-    watch?:Array<{key:string, options?:object, handler:Function}>;
-    computed?:Array<{getter:Function, setter?:Function}>,
+    props?: Array<{key: string, type?:any, required?: boolean, default?:any}>;
+    watches?:Array<{key:string, options?:string, handler:string}>;
+    computed?:Array<{getter:string, setter?:string}>,
     modules?:Array<{name:string, path: string}>
 }
