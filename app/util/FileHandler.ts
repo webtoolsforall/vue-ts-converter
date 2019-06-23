@@ -34,9 +34,10 @@ export const readFile = (
 export const writeFile = (
 	path: string,
 	data: string | Buffer,
-	opt: object
+	opt = {encoding: 'utf-8'}
 ): Promise<string> => {
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
+		await mkdirp(getPathFromFile(path));
 		fs.writeFile(path, data, opt, err => {
 			if (err) {
 				reject(err);

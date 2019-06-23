@@ -1,7 +1,6 @@
 import * as parser from '@babel/parser';
 import traverse from '@babel/traverse';
 import generate from '@babel/generator';
-import { componentVisitor } from './BabelVisitors';
 export const parseComponentScript = (
 	code,
 	opt: parser.ParserOptions = {
@@ -36,17 +35,18 @@ export const parseComponentScript = (
 	});
 };
 
-export const traverseCode = (ast, path) => {
-	// console.log(`got ast:`);
-	// console.log(ast);
-	// console.log(path);
-	let result: TraverseResult = {
+export const traverseCode = (ast, componentPath): Promise<TemplateData> => {
+	return new Promise((resolve, reject)=>{
+		try {
+			let result: TraverseResult = {
 		componentName: '',
 		components: [],
 		modules: [],
 		data: [],
 		props: [],
-		watches: []
+		watches: [],
+		computed: '',
+		hooks: []
 	};
 	// 		// get mod
 	traverse(ast, {
@@ -108,7 +108,6 @@ export const traverseCode = (ast, path) => {
 							path.isObjectProperty() &&
 							path.node.value.type === 'ObjectExpression'
 						) {
-							debugger;
 							let prop = {
 								key: path.node.key.name,
 								type: 'any',
@@ -129,12 +128,9 @@ export const traverseCode = (ast, path) => {
 								}
 							});
 							result.props.push(prop);
-							console.log(result);
-							debugger;
 						}
 					}
 				});
-				debugger;
 			}
 			// get watch
 			if (path.isObjectProperty() && path.node.key.name === 'watch') {
@@ -164,55 +160,77 @@ export const traverseCode = (ast, path) => {
 							params: [],
 							options: []
 						};
-						
+
 						path.traverse({
 							Identifier(path) {
 								if (
 									path.parent.type === 'ObjectProperty' &&
 									path.parent.value.type === 'ObjectExpression'
 								) {
-									watch.key = generateCode(path.node)
+									watch.key = generateCode(path.node);
 								}
 							},
 							enter(path) {
 								if (path.isIdentifier({ name: 'handler' })) {
 									// handler
-									watch.handler = generateCode(path.parent.body)
+									watch.handler = generateCode(path.parent.body);
 									// params
-									watch.params = (path.parent && path.parent.params.map(d => d.name)) || []
+									watch.params =
+										(path.parent && path.parent.params.map(d => d.name)) || [];
 								}
 								// get watch options
 								path.traverse({
 									ObjectProperty(path) {
-										watch.options.push(generateCode(path.node))
+										watch.options.push(generateCode(path.node));
 									}
 								});
-								
 							}
 						});
 						// TODO: optimize logic to get one result
-						if(watch.key && watch.handler){
-							result.watches.push(watch)
+						if (watch.key && watch.handler) {
+							result.watches.push(watch);
 						}
 					}
 				});
 			}
 			// get computed
+			// TODO: parse vuex as @component property and other as class property
 			if (path.isObjectProperty() && path.node.key.name === 'computed') {
-				debugger
-				path.traverse({
-					
-				})
-				// hav setter
-				// normal 
-				// vuex mapState
-
+				result.computed = generateCode(path.node.value);
 			}
-
+			// get hooks
+		},
+		ObjectMethod(path) {
+			const hooksList = [
+				'beforeCreate',
+				'created',
+				'beforeMount',
+				'mounted',
+				'beforeUpdate',
+				'updated',
+				'beforeDestroy',
+				'destroyed'
+			];
+			if(hooksList.includes(path.node.key.name)){
+				const hook = {
+					name: path.node.key.name,
+					handler: generateCode(path.node.body)
+				}
+				result.hooks.push(hook)
+			}
 		}
 	});
-	console.log(result);
-	debugger;
+	if(!result.componentName){
+		// got xxx/xx/file.vue => file
+		result.componentName = componentPath.split('/').slice(-1)[0].split('.')[0]
+	}
+	resolve(result)
+		} catch (error) {
+			reject(error)
+		}
+	
+	})
+	
 };
 
 export const generateCode = (ast, opt: object = { sourceMaps: true }) => {

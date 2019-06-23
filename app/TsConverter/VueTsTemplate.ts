@@ -11,21 +11,26 @@ export default class VueTsTemplate {
         const vueFile = `
         import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
         {{#modules}}
-        import {{name}} from '{{path}}'
+        import {{name}} from '{{value}}'
         {{/modules}}
 
         @Component({
+          {{#if components}}
                 components: {
                 {{#components}}
-                  {{name}}: () => import('{{path}}'),
+                  {{name}}: {{value}},
                 {{/components}}
-                }
+                },
+          {{/if}}
+          {{#if computed}}
+          computed: {{{computed}}}
+          {{/if}}
         }) 
         export default class {{componentName}} extends Vue {
          
             {{#data}}
              // data()
-              {{key}}:{{type}} = {{value}}
+              {{key}}{{#if type}}:{{type}} {{/if}}= {{value}}
             {{/data}}
 
             {{#props}}
@@ -37,18 +42,12 @@ export default class VueTsTemplate {
           {{#watches}}
             // watch 
             @Watch('{{key}}'{{#if options}},{ {{options}} }{{/if}})
-            on{{key}}Changed{{handler}}
+            on{{key}}Changed(){{handler}}
           {{/watches}}
-         
-          {{#computed}}
-          // computed 
-            {{#if getter}}
-              get {{{getter}}}
-            {{/if}}
-            {{#if setter}}
-              set {{{setter}}}
-            {{/if}}
-          {{/computed}}
+
+          {{#hooks}}
+          {{name}}(){{{handler}}}
+          {{/hooks}}
           }
         `;
 		let template = Handlebars.compile(vueFile);
