@@ -4,7 +4,7 @@
     "module": "commonjs",
     "outDir": "dist",
     "sourceMap": true,
-    "types": ["node", "mocha",  "babel__core", "babel__generator", "babel__template", "babel__traverse"]
+    "types": ["node", "mocha",  "babel__core", "babel__generator", "babel__template", "babel__traverse", "prettier"]
   },
   "include": [
     "app/**/*.ts",

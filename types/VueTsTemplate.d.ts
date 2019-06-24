@@ -1,5 +1,5 @@
 interface TemplateData {
-    components?: Array<{name:string, path: string}>;
+    components?: Array<{name:string, path: string}> | string;
     data?: Array<{key: string, type?: string, value:string}>;
     methods?: Array<string>;
     componentName: string;

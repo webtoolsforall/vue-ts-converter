@@ -119,7 +119,6 @@ export default class ParseModule {
 			const staticRegexp = /^\/static\/(.*)"*/gm
 			if(staticRegexp.test(from)){
 				let result = from.match(staticRegexp)
-				debugger
 				// TODO: remove static from regexp
 				resolve(`${this.projectConfig.staticResourcePath}${result && result[0]}`)
 			} else if (from.includes('src/assets')){

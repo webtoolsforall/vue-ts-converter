@@ -1,6 +1,6 @@
 import { parseComponentScript, parseVueSFC, traverseCode } from '../util';
 import VueTsTemplate from './VueTsTemplate';
-import { readFile, insertIntoString, writeFile } from '../util';
+import { readFile, insertIntoString, writeFile, formatCode } from '../util';
 export default class GenerateTs {
 	path: string = '';
 	constructor(path: string) {
@@ -9,13 +9,14 @@ export default class GenerateTs {
 	}
 
 	async start(path) {
-		if(path.includes('indexV3')){
+		if(!path){
+			return
+		}
+		// if(path.includes('indexV3')){
 			let data = await parseComponentScript(await parseVueSFC(path));
 			let renderData = await traverseCode(data, path);
-			console.log(renderData);
-			this.replaceCode(new VueTsTemplate(renderData).build());
-		}
-		
+			this.replaceCode(await new VueTsTemplate(renderData).build());
+		// }
 	}
 
 	async replaceCode(codes) {
@@ -27,15 +28,13 @@ export default class GenerateTs {
 			${codes}
 			</script>
 		`;
-		let test = insertIntoString(code, start, end - start, script);
+		let result = await formatCode(insertIntoString(code, start, end - start, script));
 		await writeFile(
 			this.path.replace(
 				'/Users/xiaoshuai/codes/jcloudVue',
 				'/Users/xiaoshuai/codes/vue-ts-converter/output/tsdir'
 			),
-			test
+			result
 		);
-		console.log(test)
-		debugger;
 	}
 }

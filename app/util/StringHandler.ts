@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 import logger from '../logger';
 /**
- * 
+ *
  * @param pathString file path to handle
  */
 export const addSuffix = (pathString: string): string => {
@@ -42,5 +42,28 @@ export const upperFirstLetter = (name): string => {
 	return name.charAt(0).toUpperCase() + name.slice(1);
 };
 export const insertIntoString = (string, start, delCount, newSubStr) => {
-	return string.slice(0, start) + newSubStr + string.slice(start + Math.abs(delCount));
+	return (
+		string.slice(0, start) +
+		newSubStr +
+		string.slice(start + Math.abs(delCount))
+	);
+};
+export const getComponentClassName = (name: string): string => {
+		let specialList = ['404']
+		if(specialList.includes('name')){
+			return(`Components${name}`)
+		}
+		if (name.includes('/')) {
+			return(
+				upperFirstLetter(
+					name
+						.split('/')
+						.slice(-1)[0]
+						.split('.')[0]
+				)
+			);
+		} else if(name.includes('-')){
+			return (upperFirstLetter(name.split('-').join('')))
+		}
+		
 };
